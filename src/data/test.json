@@ -1,0 +1,35 @@
+[
+    {
+        "path": "/deviceManagement",
+        "name": "deviceManagement",
+        "icon": "ios-folder",
+        "title": "设备管理",
+        "component": "Main",
+        "children": [
+            {
+                "path": "OeeStatistics",
+                "name": "OeeStatistics",
+                "icon": "ios-paper",
+                "title": "OEE统计",
+                "parentComponent": "deviceManagement",
+                "component": "ParentView",
+                "children": [
+                    {
+                        "path": "deviceOEE",
+                        "name": "deviceOEE",
+                        "icon": "ios-paper-outline",
+                        "title": "设备OEE",
+                        "component": "group/page1/page1"
+                    },
+                    {
+                        "path": "deviceEfficiencyAnalysis",
+                        "name": "deviceEfficiencyAnalysis",
+                        "icon": "ios-paper-outline",
+                        "title": "设备效率分析",
+                        "component": "group/page2/page2"
+                    }
+                ]
+            }
+        ]
+    }
+]

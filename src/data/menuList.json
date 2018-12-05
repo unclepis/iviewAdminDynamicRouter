@@ -1,0 +1,153 @@
+[
+    {
+        "path": "/deviceManagement",
+        "name": "deviceManagement",
+        "meta": {
+            "icon": "md-menu",
+            "title": "设备管理"
+        },
+        "component": "Main",
+        "children": [
+            {
+                "path": "OeeStatistics",
+                "name": "OeeStatistics",
+                "meta": {
+                    "icon": "md-funnel",
+                    "title": "OEE统计"
+                },
+                "parentComponent": "deviceManagement",
+                "component": "ParentView",
+                "children": [
+                    {
+                        "path": "deviceOEE",
+                        "name": "deviceOEE",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "设备OEE"
+                        }
+                    },
+                    {
+                        "path": "deviceEfficiencyAnalysis",
+                        "name": "deviceEfficiencyAnalysis",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "设备效率分析"
+                        }
+                    },
+                    {
+                        "path": "deviceAlarmStatistics",
+                        "name": "deviceAlarmStatistics",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "设备告警统计"
+                        }
+                    },
+                    {
+                        "path": "deviceLogAnalysis",
+                        "name": "deviceLogAnalysis",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "设备日志分析"
+                        }
+                    },
+                    {
+                        "path": "deviceStopAnalysis",
+                        "name": "deviceStopAnalysis",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "设备停机分析"
+                        }
+                    }
+                ]
+            },
+            {
+                "path": "deviceArchives",
+                "name": "deviceArchives",
+                "meta": {
+                    "icon": "md-funnel",
+                    "title": "设备档案"
+                },
+                "parentComponent": "deviceArchives",
+                "component": "ParentView",
+                "children": [
+                    {
+                        "path": "archivesBasicInfo",
+                        "name": "archivesBasicInfo",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "详情基本信息"
+                        }
+                    },
+                    {
+                        "path": "archivesDataCollection",
+                        "name": "archivesDataCollection",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "详情数据采集"
+                        }
+                    },
+                    {
+                        "path": "archivesDeviceAlarm",
+                        "name": "archivesDeviceAlarm",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "详情设备告警"
+                        }
+                    },
+                    {
+                        "path": "archivesDeviceLog",
+                        "name": "archivesDeviceLog",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "详情设备日志"
+                        }
+                    },
+                    {
+                        "path": "archivesCollectionPointConfig",
+                        "name": "archivesCollectionPointConfig",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "详情采集点配置"
+                        }
+                    }
+                ]
+            },
+            {
+                "path": "alarmManagement",
+                "name": "alarmManagement",
+                "meta": {
+                    "icon": "md-funnel",
+                    "title": "告警管理"
+                },
+                "parentComponent": "alarmManagement",
+                "component": "ParentView",
+                "children": [
+                    {
+                        "path": "alarmConfirmOrNot",
+                        "name": "alarmConfirmOrNot",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "告警确认/待确认"
+                        }
+                    },
+                    {
+                        "path": "alarmHistoryQuery",
+                        "name": "alarmHistoryQuery",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "告警历史查询"
+                        }
+                    },
+                    {
+                        "path": "alarmKnowledge",
+                        "name": "alarmKnowledge",
+                        "meta": {
+                            "icon": "md-funnel",
+                            "title": "告警知识库"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]
