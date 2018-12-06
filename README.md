@@ -3,10 +3,6 @@ vue+iview组件库的动态路由和权限验证实现
 
 ### 实现目标
 客户端从服务端拿到路由和权限数据后，刷新项目的路由和菜单列表，并进行权限控制。
-
-### 项目基础
- - 基础框架： iview组件库官方模板项目 `iview-admin` 的template分支项目，此项目为`iview-admin`的基础框架代码。项目地址:[iview-admin](https://github.com/iview/iview-admin)
- - 权限验证： 权限验证参考了[Vue + ElementUI 手撸后台管理网站基本框架 (二) 权限控制](https://blog.csdn.net/harsima/article/details/77949448)中实现思路和部分代码。
  
 ### 实现逻辑
 
