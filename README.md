@@ -26,7 +26,7 @@ iview-admin项目将路由分为三种：
 
 主要代码实现如下：
 
-![实现结果](./srcimages/demo.png)
+![实现结果](./src/images/demo.png)
 数据请求及路由节点生成
 ```
 //util.js
