@@ -1,4 +1,4 @@
-# iview-dynamicRouter
+# 徐工通用设备云项目
 vue+iview组件库的动态路由和权限验证实现
 
 ### 实现目标
