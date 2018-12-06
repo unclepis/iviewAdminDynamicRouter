@@ -152,24 +152,6 @@ util.setCurrentPath = function (vm, name) {
                     }
                     i++;
                 }
-                // while (i < len) {
-                //     if (childArr[i].name === name) {
-                //         return true;
-                //     } else {
-                //         if (childArr[i].children) {
-                //             let j = 0;
-                //             let grandChild = childArr[i].children;
-                //             let grandChildLength = grandChild.length;
-                //             while (j < grandChildLength) {
-                //                 if (grandChild[j].name === name) {
-                //                     return true;
-                //                 }
-                //             }
-                //             return true
-                //         }
-                //     }
-                //     i++;
-                // }
                 //如果一级，二级菜单下都没有此按钮名称，则遍历三级菜单
                 if (!hasMenu) {
                     for (let m = 0; m < childArr.length; m++) {

@@ -1,5 +1,3 @@
->github上关于vue动态添加路由的例子很多，本项目参考了部分项目后，在iview框架基础上完成了动态路由的动态添加和菜单刷新。为了帮助其他需要的朋友，现分享出实现逻辑，欢迎一起交流学习。
-
 # iview-dynamicRouter
 vue+iview组件库的动态路由和权限验证实现
 
@@ -28,10 +26,14 @@ iview-admin项目将路由分为三种：
 
 主要代码实现如下：
 
-
+![实现结果](./srcimages/demo.png)
 数据请求及路由节点生成
 ```
 //util.js
+
+// 导入一级和二级的路由组件
+import ParentView from '@/views/parentView.vue';
+import Main from '@/views/Main.vue';
 
 //生成路由
 util.initRouter = function (vm) {
@@ -61,23 +63,217 @@ util.initRouter = function (vm) {
     });
 };
 
-//生成路由节点
+// 生成路由节点
 util.initRouterNode = function (routers, data) {
     for (var item of data) {
         let menu = Object.assign({}, item);
-        menu.component = lazyLoading(menu.component);
+        if (menu.component) {
+            if (menu.component === "Main") { // 一级菜单的router-view,将后台返回的字符串转化成组件
+                menu.component = Main;
+            } else if (menu.component === "ParentView") { //二级菜单的router-view,将后台返回的字符串转化成组件
+                menu.component = ParentView;
+            } else {
+                menu.component = lazyLoading(menu.component); // 三级菜单动态加载
+            }
+        }
 
         if (item.children && item.children.length > 0) {
             menu.children = [];
             util.initRouterNode(menu.children, item.children);
         }
-        //添加权限判断
-        meta.permission = menu.permission ? menu.permission : null;
-        //添加标题
-        meta.title = menu.title ? menu.title : null;
-        menu.meta = meta;
+        // let meta = {};
+        // // 给页面添加标题
+        // meta.permission = menu.permission ? menu.permission : null;
+        // meta.title = menu.title ? menu.title : null;
+
+        // menu.meta = meta;
+
+        routers.push(menu);
     }
 };
+
+// 重新了util的setCurrentPath方法支持三层路由
+
+```
+    util.setCurrentPath = function (vm, name) {
+    let title = '';
+    let isOtherRouter = false;
+    vm.$store.state.app.routers.forEach(item => {
+        if (item.children.length === 1) {
+            if (item.children[0].name === name) {
+                title = util.handleTitle(vm, item);
+                if (item.name === 'otherRouter') {
+                    isOtherRouter = true;
+                }
+            }
+        } else {
+            item.children.forEach(child => {
+                if (child.name === name) {
+                    title = util.handleTitle(vm, child);
+                    if (item.name === 'otherRouter') {
+                        isOtherRouter = true;
+                    }
+                }
+            });
+        }
+    });
+    let currentPathArr = [];
+    //去首页
+    if (name === 'home_index') {
+        currentPathArr = [
+            {
+                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
+                path: '',
+                name: 'home_index'
+            }
+        ];
+    }
+    //去导航菜单一级页面或者OtherRouter路由中的页面
+    else if ((name.indexOf('_index') >= 0 || isOtherRouter) && name !== 'home_index') {
+        currentPathArr = [
+            {
+                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
+                path: '/home',
+                name: 'home_index'
+            },
+            {
+                title: title,
+                path: '',
+                name: name
+            }
+        ];
+    }
+    //去导航菜单二级页面或三级页面
+    else {
+        let currentPathObj = vm.$store.state.app.routers.filter(item => {
+
+            var hasMenu;
+            if (item.children.length < 1) {
+                hasMenu = item.children[0].name === name;
+                return hasMenu;
+            } else {
+                let i = 0;
+                let childArr = item.children;
+                let len = childArr.length;
+                while (i < len) {
+                    //如果是三级页面按钮，则在二级按钮数组中找不到这个按钮名称
+                    //需要二级页面下可能出现三级子菜单的情况逻辑加入
+                    if (childArr[i].name === name) {
+                        hasMenu = true;
+                        return hasMenu;
+                    }
+                    i++;
+                }
+                //如果一级，二级菜单下都没有此按钮名称，则遍历三级菜单
+                if (!hasMenu) {
+                    for (let m = 0; m < childArr.length; m++) {
+                        if (!childArr[m].children) continue;
+                        let sonArr = childArr[m].children;
+                        for (let n = 0; n < sonArr.length; n++) {
+                            if (sonArr[n].name === name) {
+                                hasMenu = true;
+                                return hasMenu;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+        })[0];
+
+        if (currentPathObj.children.length <= 1 && currentPathObj.name === 'home') {
+            currentPathArr = [
+                {
+                    title: '首页',
+                    path: '',
+                    name: 'home_index'
+                }
+            ];
+        }
+        else {
+            //如果是三级页面按钮，则在二级按钮数组中找不到这个按钮名称
+            //需要二级页面下可能出现三级子菜单的情况逻辑加入
+            let childObj = currentPathObj.children.filter((child) => {
+                return child.name === name;
+            })[0];
+
+            // let thirdLevelObj =
+            console.log(childObj)
+            //二级页面
+            if (childObj) {
+                currentPathArr = [
+                    {
+                        title: '首页',
+                        path: '/home',
+                        name: 'home_index'
+                    },
+                    {
+                        title: currentPathObj.title,
+                        path: '',
+                        name: currentPathObj.name
+                    },
+                    {
+                        title: childObj.title,
+                        path: currentPathObj.path + '/' + childObj.path,
+                        name: name
+                    }
+                ];
+            }
+            //childobj为undefined，再从三级页面中遍历
+            else {
+                let thirdObj;
+                let childObj = currentPathObj.children.filter((child) => {
+                    let hasChildren;
+                    hasChildren = child.name === name;
+                    if (hasChildren) return hasChildren
+
+                    if (child.children) {
+                        let sonArr = child.children;
+                        for (let n = 0; n < sonArr.length; n++) {
+                            if (sonArr[n].name === name) {
+                                thirdObj = sonArr[n];
+                                hasChildren = true;
+                                return hasChildren;
+                            }
+                        }
+                    }
+                    return hasChildren
+                })[0];
+
+                if (thirdObj && childObj) {
+                    currentPathArr = [
+                        {
+                            title: '首页',
+                            path: '/home',
+                            name: 'home_index'
+                        },
+                        {
+                            title: currentPathObj.title,
+                            path: '',
+                            name: currentPathObj.name
+                        },
+                        {
+                            title: childObj.title,
+                            path: '',    //设为空是因为此二级菜单没有实际页面且用于面包屑组件显示，path为空的将不可单击
+                            name: childObj.name
+                        },
+                        {
+                            title: thirdObj.title,
+                            path: currentPathObj.path + '/' + childObj.path + '/' + thirdObj.path,
+                            name: thirdObj.name
+                        }
+                    ];
+                }
+
+            }
+
+        }
+    }
+
+    vm.$store.commit('setCurrentPath', currentPathArr);
+    return currentPathArr;
+};
+```
 ```
 动态加载组件
 ```
@@ -85,25 +281,7 @@ util.initRouterNode = function (routers, data) {
 
 export default (url) =>()=>import(`@/views/${url}.vue`)
 ```
-Store缓存实现
-```
-//app.js
 
- // 动态添加主界面路由，需要缓存
-updateAppRouter (state, routes) {
-    state.routers.push(...routes);
-    router.addRoutes(routes);
-},
-
-// 动态添加全局路由，不需要缓存
-updateDefaultRouter (state, routes) {
-    router.addRoutes(routes);
-},
-// 接受前台数组，刷新菜单
-updateMenulist (state, routes) {
-    state.menuList = routes;
-}
-```
 最后在main.js中进行调用
 
 ```
@@ -113,110 +291,155 @@ updateMenulist (state, routes) {
     util.initRouter(this);
   }
 ```
-#### 权限控制
 
-同动态路由实现方法类似，操作权限控制也一般也分为两种，第一种是页面显示时不控制权限，所有的操作，比如按钮全部展现，然后在操作发起时，进行权限判断，如果用户拥有该操作的权限，则通过，否则提醒用户无权限，第二种则是在页面加载的时候，就进行权限判断，无权限的操作不进行显示。本人更喜欢第二种方法，这样不会对用户进行误导，个人认为用户看到的应该就行可操作的，不然点下按钮再提示无权限的感觉一定很不爽。
-
-本项目的思路来源见参考博文，原博主的具体思路是：在路由结构的meta字段中，添加用户操作权限列表，然后注册全局指令，当节点初次渲染时，判断该页面是否存在权限，如果存在，并且传入的参数不在权限列表中，则直接删除该节点。
-
-
-主要代码实现如下：
-
-在路由数据中添加`permission`字段，存放权限列表
+// mock 后台返回的三级菜单
 
 ```
-//menu.json，模拟异步请求数据
+//test.json，模拟异步请求数据
 [
-  {
-    "path": "/groupOne",
-    "icon": "ios-folder",
-    "name": "system_index",
-    "title": "groupOne",
-    "component": "Main",
-    "children": [
-      {
-        "path": "pageOne",
-        "icon": "ios-paper-outline",
-        "name": "pageOne",
-        "title": "pageOne",
-        "component": "group/page1/page1",
-        "permission":["del"]
-      },
-     ...
-    ]
-  }
+    {
+        "path": "/deviceManagement",
+        "name": "deviceManagement",
+        "icon": "link",
+        "title": "设备管理",
+        "component": "Main",
+        "children": [
+            {
+                "path": "OeeStatistics",
+                "name": "OeeStatistics",
+                "icon": "ios-pulse",
+                "title": "OEE统计",
+                "parentComponent": "deviceManagement",
+                "component": "ParentView",
+                "children": [
+                    {
+                        "path": "deviceOEE",
+                        "name": "deviceOEE",
+                        "icon": "wand",
+                        "title": "设备OEE",
+                        "component": "group/page1/page1"
+                    },
+                    {
+                        "path": "deviceEfficiencyAnalysis",
+                        "name": "deviceEfficiencyAnalysis",
+                        "icon": "ios-analytics-outline",
+                        "title": "设备效率分析",
+                        "component": "group/page2/page2"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "path": "/groupOne",
+        "icon": "ios-folder",
+        "name": "system_index",
+        "title": "groupOne",
+        "component": "Main",
+        "children": [
+            {
+                "path": "pageOne",
+                "icon": "ios-paper-outline",
+                "name": "pageOne",
+                "title": "pageOne",
+                "component": "group/page1/page1",
+                "permission": [
+                    "del"
+                ]
+            },
+            {
+                "path": "pageTwo",
+                "icon": "ios-paper-outline",
+                "name": "pageTwo",
+                "title": "pageTwo",
+                "component": "group/page2/page2",
+                "permission": [
+                    "add",
+                    "del"
+                ]
+            },
+            {
+                "path": "pageThere",
+                "icon": "ios-paper-outline",
+                "name": "pageThere",
+                "title": "pageThere",
+                "component": "group/page3/page3"
+            }
+        ]
+    }
 ]
 ```
 
-在遍历生成路由节点时，将`permission`字段数据存入路由节点`meta`属性中
-```
-//util.js
-
-//生成路由节点
-util.initRouterNode = function (routers, data) {
-    for (var item of data) {
-        ....
-        //添加权限判断
-        meta.permission = menu.permission ? menu.permission : null;
-        ...
-    }
-};
-```
-
-
-
-
-定义全局命令组件，读取路由`permission`属性值获得权限列表，如果该不权限在权限列表中，则删除节点
-```
-//hasPermission.js 
-
-const hasPermission = {
-    install (Vue, options) {
-        Vue.directive('hasPermission', {
-            bind (el, binding, vnode) {
-                let permissionList = vnode.context.$route.meta.permission;
-                if (permissionList && permissionList.length && !permissionList.includes(binding.value)) {
-                    el.parentNode.removeChild(el);
-                }
-            }
-        });
-    }
-};
-
-export default hasPermission;
-```
-
-权限组件使用示例：
+//修改main-components/components/siderbarMenu.vue文件,渲染三级菜单
 
 ```
-<template>
-    <div>
-        <h1>page1</h1>
-        <Button v-hasPermission="'add'">添加</Button>
-        <Button v-hasPermission="'edit'">修改</Button>
-        <Button v-hasPermission="'del'">删除</Button>
-    </div>
+    <template>
+    <Menu ref="sideMenu" :active-name="$route.name" :open-names="openNames" :theme="menuTheme" width="auto" @on-select="changeMenu">
+        <template v-for="levelOne in menuList">
+            <!-- <MenuItem v-if="levelOne.children.length<1" :name="levelOne.children[0].name" :key="levelOne.path">
+                <Icon :type="levelOne.icon" :size="iconSize" :key="levelOne.path_icon"></Icon>
+                <span class="layout-text" :key="levelOne.path_path">{{ itemTitle(levelOne) }}</span>
+            </MenuItem> -->
+
+            <Submenu v-if="levelOne.children.length >=1" :name="levelOne.name" :key="levelOne.path">
+                <template slot="title">
+                    <Icon :type="levelOne.icon" :size="iconSize"></Icon>
+                    <span class="layout-text">111{{ itemTitle(levelOne) }}</span>
+                </template>
+                <template v-for="levelTwo in levelOne.children">
+                    <MenuItem v-if="isThirdLeveMenu(levelTwo)==false" :name="levelTwo.name" :key="levelTwo.name">
+                        <Icon :type="levelTwo.icon" :size="iconSize" :key="levelTwo.name_icon"></Icon>
+                        <span class="layout-text" :key="levelTwo.name_span">222{{ levelTwo.title }}</span>
+                    </MenuItem>
+                       <Submenu class="levelTwoSubmenu" v-if="isThirdLeveMenu(levelTwo)==true" :name="levelTwo.name" :key="'menuitem' + levelTwo.name">
+                            <template slot="title">
+                                <Icon :type="levelTwo.icon" :size="iconSize" :key="'icon' + levelTwo.name"></Icon>
+                                <span class="layout-text" :key="'title' + levelTwo.name">233{{ itemTitle(levelTwo) }}</span>
+                            </template>
+                            <template v-for="levelThree in levelTwo.children">
+                                <MenuItem :name="levelThree.name" :key="'menuitem' + levelThree.name">
+                                <Icon :type="levelThree.icon" :size="iconSize" :key="'icon' + levelThree.name"></Icon>
+                                <span class="layout-text" :key="'title' + levelThree.name">333{{ itemTitle(levelThree) }}</span>
+                                </MenuItem>
+                            </template>
+                        </Submenu>
+                </template>
+            </Submenu>
+        </template>
+    </Menu>
 </template>
 ```
 
-全局注册组件
+// iview menu组件引入submenu后样式有点问题,自己写了样式修复样式的问题
+
 ```
-// main.js
+// 修复菜单背景颜色因为margin错位的问题
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened{
+    background: #495060;
+}
+// 修复二级和三级菜单样式错位的问题
+.levelTwoSubmenu{
+    margin-left: 10px;
+}
 
-import hasPermission from '@/libs/hasPermission.js';
-Vue.use(hasPermission);
+// 修复点击二级菜单 submenu 箭头不变化的问题
+.levelTwoSubmenu.ivu-menu-submenu.ivu-menu-opened .ivu-icon.ivu-icon-ios-arrow-down.ivu-menu-submenu-title-icon{
+    -webkit-transform: rotate(0);
+    transform: rotate(0);
+}
+
+.levelTwoSubmenu .ivu-menu-item{
+    background: #495060;
+}
+// 未选中元素hover颜色的bug
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item:hover{
+    color: #fff;
+    background: #495060 !important;
+}
+// 已经选中元素hover颜色bug
+.levelTwoSubmenu .ivu-menu-item.ivu-menu-item-active.ivu-menu-item-selected:hover{
+    border-right: none;
+    color: #fff;
+    background: #2d8cf0!important;
+}
 ```
-
-
-这种权限控制方法的优点就是，不管是管理配置还是页面处理逻辑都相对简单，没有很多重复的代码判断和节点处理，在参考对比了网上几种实现方式后，个人比较推荐这一种方法。
-
-### 页面标签和面包屑导航
-
-在我看来，页面标签和面包屑都属于系统中锦上添花的页面相关控件，提高页面管理的便捷性，在iview官方admin项目中已经实现了这两个组件。所以这个项目中，只是将其进行移植，实现了组件功能，没有深入了解，感兴趣的可以仔细研究。
-
-
-
-
-### 与我联系
-
-Email:thezhangwen@outlook.com
