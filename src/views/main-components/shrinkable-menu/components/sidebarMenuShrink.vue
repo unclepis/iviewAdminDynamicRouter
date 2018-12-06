@@ -7,8 +7,19 @@
                         <Icon :size="20" :color="iconColor" :type="item.icon"></Icon>
                     </Button>
                     <DropdownMenu style="width: 200px;" slot="list">
-                        <template v-for="(child, i) in item.children">
+                        <template v-if="!(child.children&&child.children.length)" v-for="(child, i) in item.children">
+                            <DropdownItem  :name="child.name" :key="i"><Icon :type="child.icon"></Icon><span style="padding-left:10px;">{{ itemTitle(child) }}</span></DropdownItem>
+                        </template>
+                        <template v-else> 
                             <DropdownItem :name="child.name" :key="i"><Icon :type="child.icon"></Icon><span style="padding-left:10px;">{{ itemTitle(child) }}</span></DropdownItem>
+                            <Dropdown placement="right-start">
+                                <DropdownItem :name="child.name" :key="i"><Icon :type="child.icon"></Icon><span style="padding-left:10px;">{{ itemTitle(child) }}</span></DropdownItem>
+                                <DropdownMenu slot="list">
+                                    <DropdownItem v-for="(grandChild,grandIndex) in child.children" :key="grandIndex">
+                                        <Icon :type="grandChild.icon"></Icon><span style="padding-left:10px;">{{ itemTitle(grandChild) }}</span>
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
                         </template>
                     </DropdownMenu>
                 </Dropdown>
@@ -46,7 +57,6 @@ export default {
         }
     },
     created () {
-        debugger
     }
 };
 </script>

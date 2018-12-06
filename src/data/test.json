@@ -29,6 +29,13 @@
                         "component": "group/page2/page2"
                     }
                 ]
+            },
+            {
+                "path": "test",
+                "name": "test",
+                "icon": "ios-pulse",
+                "title": "测试",
+                "parentComponent": "deviceManagement"
             }
         ]
     },

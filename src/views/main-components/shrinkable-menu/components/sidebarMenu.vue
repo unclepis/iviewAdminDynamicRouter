@@ -16,7 +16,7 @@
                     <span class="layout-text">111{{ itemTitle(levelOne) }}</span>
                 </template>
                 <template v-for="levelTwo in levelOne.children">
-                    <MenuItem v-if="isThirdLeveMenu(levelTwo)==false" :name="levelTwo.name" :key="levelTwo.name">
+                    <MenuItem class="levelOneSubmenu" v-if="isThirdLeveMenu(levelTwo)==false" :name="levelTwo.name" :key="levelTwo.name">
                         <Icon :type="levelTwo.icon" :size="iconSize" :key="levelTwo.name_icon"></Icon>
                         <span class="layout-text" :key="levelTwo.name_span">222{{ levelTwo.title }}</span>
                     </MenuItem>
