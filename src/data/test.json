@@ -2,14 +2,14 @@
     {
         "path": "/deviceManagement",
         "name": "deviceManagement",
-        "icon": "ios-folder",
+        "icon": "link",
         "title": "设备管理",
         "component": "Main",
         "children": [
             {
                 "path": "OeeStatistics",
                 "name": "OeeStatistics",
-                "icon": "ios-paper",
+                "icon": "ios-pulse",
                 "title": "OEE统计",
                 "parentComponent": "deviceManagement",
                 "component": "ParentView",
@@ -17,18 +17,55 @@
                     {
                         "path": "deviceOEE",
                         "name": "deviceOEE",
-                        "icon": "ios-paper-outline",
+                        "icon": "wand",
                         "title": "设备OEE",
                         "component": "group/page1/page1"
                     },
                     {
                         "path": "deviceEfficiencyAnalysis",
                         "name": "deviceEfficiencyAnalysis",
-                        "icon": "ios-paper-outline",
+                        "icon": "ios-analytics-outline",
                         "title": "设备效率分析",
                         "component": "group/page2/page2"
                     }
                 ]
+            }
+        ]
+    },
+    {
+        "path": "/groupOne",
+        "icon": "ios-folder",
+        "name": "system_index",
+        "title": "groupOne",
+        "component": "Main",
+        "children": [
+            {
+                "path": "pageOne",
+                "icon": "ios-paper-outline",
+                "name": "pageOne",
+                "title": "pageOne",
+                "component": "group/page1/page1",
+                "permission": [
+                    "del"
+                ]
+            },
+            {
+                "path": "pageTwo",
+                "icon": "ios-paper-outline",
+                "name": "pageTwo",
+                "title": "pageTwo",
+                "component": "group/page2/page2",
+                "permission": [
+                    "add",
+                    "del"
+                ]
+            },
+            {
+                "path": "pageThere",
+                "icon": "ios-paper-outline",
+                "name": "pageThere",
+                "title": "pageThere",
+                "component": "group/page3/page3"
             }
         ]
     }

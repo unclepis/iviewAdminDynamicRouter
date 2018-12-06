@@ -29,24 +29,24 @@ const app = {
     },
     mutations: {
         // 动态添加主界面路由，需要缓存
-        updateAppRouter (state, routes) {
+        updateAppRouter(state, routes) {
             state.routers.push(...routes);
             router.addRoutes(routes);
         },
         // 动态添加全局路由，不需要缓存
-        updateDefaultRouter (state, routes) {
+        updateDefaultRouter(state, routes) {
             router.addRoutes(routes);
         },
         // 接受前台数组，刷新菜单
-        updateMenulist (state, routes) {
+        updateMenulist(state, routes) {
             state.menuList = routes;
         },
         // 设置打开过的标签页
-        setTagsList (state, list) {
+        setTagsList(state, list) {
             state.tagsList.push(...list);
         },
         // 删除标签
-        removeTag (state, name) {
+        removeTag(state, name) {
             state.pageOpenedList.map((item, index) => {
                 if (item.name === name) {
                     state.pageOpenedList.splice(index, 1);
@@ -54,7 +54,7 @@ const app = {
             });
         },
         // 已打开页面缓存
-        pageOpenedList (state, get) {
+        pageOpenedList(state, get) {
             let openedPage = state.pageOpenedList[get.index];
             if (get.argu) {
                 openedPage.argu = get.argu;
@@ -66,13 +66,13 @@ const app = {
             localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
         },
         // 关闭所有标签
-        clearAllTags (state) {
+        clearAllTags(state) {
             state.pageOpenedList.splice(1);
             state.cachePage.length = 0;
             localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
         },
         // 关闭此页面外标签
-        clearOtherTags (state, vm) {
+        clearOtherTags(state, vm) {
             let currentName = vm.$route.name;
             let currentIndex = 0;
             state.pageOpenedList.forEach((item, index) => {
@@ -93,26 +93,26 @@ const app = {
             localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
         },
         // 设置打开默认页面
-        setOpenedList (state) {
+        setOpenedList(state) {
             state.pageOpenedList = localStorage.pageOpenedList ? JSON.parse(localStorage.pageOpenedList) : [otherRouter.children[0]];
         },
         // 设置当前路径
-        setCurrentPath (state, pathArr) {
+        setCurrentPath(state, pathArr) {
             state.currentPath = pathArr;
         },
         // 设置当前页面名
-        setCurrentPageName (state, name) {
+        setCurrentPageName(state, name) {
             state.currentPageName = name;
         },
         // 关闭页面
-        closePage (state, name) {
+        closePage(state, name) {
             state.cachePage.forEach((item, index) => {
                 if (item === name) {
                     state.cachePage.splice(index, 1);
                 }
             });
         },
-        addOpenSubmenu (state, name) {
+        addOpenSubmenu(state, name) {
             let hasThisName = false;
             let isEmpty = false;
             if (name.length === 0) {
@@ -125,7 +125,7 @@ const app = {
                 state.openedSubmenuArr.push(name);
             }
         },
-        increateTag (state, tagObj) {
+        increateTag(state, tagObj) {
             if (!Util.oneOf(tagObj.name, state.dontCache)) {
                 state.cachePage.push(tagObj.name);
                 localStorage.cachePage = JSON.stringify(state.cachePage);
@@ -135,5 +135,4 @@ const app = {
         }
     }
 };
-
 export default app;

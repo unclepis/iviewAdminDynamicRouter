@@ -195,8 +195,21 @@ util.setCurrentPath = function (vm, name) {
                     name: 'home_index'
                 }
             ];
-        }
-        else {
+        // } else if (currentPathObj.children.length <= 1 && currentPathObj.name !== 'home') {
+        } else if (currentPathObj.children.length <= 1 && currentPathObj.name !== 'home') {
+            currentPathArr = [
+                {
+                    title: '首页',
+                    path: '/home',
+                    name: 'home_index'
+                },
+                {
+                    title: currentPathObj.title,
+                    path: '',
+                    name: name
+                }
+            ];
+        } else {
             //如果是三级页面按钮，则在二级按钮数组中找不到这个按钮名称
             //需要二级页面下可能出现三级子菜单的情况逻辑加入
             let childObj = currentPathObj.children.filter((child) => {
@@ -303,29 +316,14 @@ util.openNewPage = function (vm, name, argu, query) {
     }
 
     if (!tagHasOpened) {
-        let tag = [];
-        for(var l = 0; l < vm.$store.state.app.tagsList.length; l++){
-            var item = vm.$store.state.app.tagsList[l];
+        let tag = vm.$store.state.app.tagsList.filter((item) => {
             if (item.children && item.children.length > 0) {
-                for (var j = 0; j < item.children.length; j++) {
-                    if (name == item.children[j].name) {
-                        tag = item.children[j];
-                        break;
-                    }
-                    for (var k = 0; k < item.children[j].length; k++) {
-                        if (name == item.children[j][k].name) {
-                            tag = item.children[j][k];
-                            break;
-                        }
-                    }
-                }
+                return name === item.children[0].name;
             } else {
-                if(name === item.name){
-                    tag = item;
-                    break;
-                }
+                return name === item.name;
             }
-        }
+        });
+        tag = tag[0];
         if (tag) {
             tag = tag.children && tag.children.length > 0 ? tag.children[0] : tag;
             if (argu) {

@@ -3,9 +3,31 @@
     width: 100%;
 }
 
+// 修复菜单背景颜色因为margin错位的问题
 .ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened{
     background: #495060;
 }
+// 修复二级和三级菜单样式错位的问题
 .levelTwoSubmenu{
     margin-left: 10px;
+}
+
+// 修复点击二级菜单 submenu 箭头不变化的问题
+.levelTwoSubmenu.ivu-menu-submenu.ivu-menu-opened .ivu-icon.ivu-icon-ios-arrow-down.ivu-menu-submenu-title-icon{
+    -webkit-transform: rotate(0);
+    transform: rotate(0);
+}
+
+.levelTwoSubmenu .ivu-menu-item{
+    background: #495060;
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item:hover{
+    color: #fff;
+    background: #495060 !important;
+}
+
+.levelTwoSubmenu .ivu-menu-item.ivu-menu-item-active.ivu-menu-item-selected:hover{
+    border-right: none;
+    color: #fff;
+    background: #2d8cf0!important;
 }

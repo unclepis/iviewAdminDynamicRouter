@@ -54,12 +54,12 @@ export default {
     },
     methods: {
         isThirdLeveMenu(child){
-            if(child.children){
-            if(child.children.length>0)return true;
-            else return false;
+            if (child.children) {
+                if (child.children.length > 0) return true;
+                else return false;
             }
             else {
-            return false;
+                return false;
             }
         },
         changeMenu (active) {
