@@ -13,22 +13,22 @@
             <Submenu v-if="levelOne.children.length >=1" :name="levelOne.name" :key="levelOne.path">
                 <template slot="title">
                     <Icon :type="levelOne.icon" :size="iconSize"></Icon>
-                    <span class="layout-text">111{{ itemTitle(levelOne) }}</span>
+                    <span class="layout-text">{{ itemTitle(levelOne) }}</span>
                 </template>
                 <template v-for="levelTwo in levelOne.children">
                     <MenuItem class="levelOneSubmenu" v-if="isThirdLeveMenu(levelTwo)==false" :name="levelTwo.name" :key="levelTwo.name">
                         <Icon :type="levelTwo.icon" :size="iconSize" :key="levelTwo.name_icon"></Icon>
-                        <span class="layout-text" :key="levelTwo.name_span">222{{ levelTwo.title }}</span>
+                        <span class="layout-text" :key="levelTwo.name_span">{{ levelTwo.title }}</span>
                     </MenuItem>
                        <Submenu class="levelTwoSubmenu" v-if="isThirdLeveMenu(levelTwo)==true" :name="levelTwo.name" :key="'menuitem' + levelTwo.name">
                             <template slot="title">
                                 <Icon :type="levelTwo.icon" :size="iconSize" :key="'icon' + levelTwo.name"></Icon>
-                                <span class="layout-text" :key="'title' + levelTwo.name">233{{ itemTitle(levelTwo) }}</span>
+                                <span class="layout-text" :key="'title' + levelTwo.name">{{ itemTitle(levelTwo) }}</span>
                             </template>
                             <template v-for="levelThree in levelTwo.children">
                                 <MenuItem :name="levelThree.name" :key="'menuitem' + levelThree.name">
                                 <Icon :type="levelThree.icon" :size="iconSize" :key="'icon' + levelThree.name"></Icon>
-                                <span class="layout-text" :key="'title' + levelThree.name">333{{ itemTitle(levelThree) }}</span>
+                                <span class="layout-text" :key="'title' + levelThree.name">{{ itemTitle(levelThree) }}</span>
                                 </MenuItem>
                             </template>
                         </Submenu>

@@ -8,7 +8,7 @@
   >
     <div
       class="sidebar-menu-con"
-      :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}"
+      :style="{width: shrink?'60px':'256px', overflow: shrink ? 'visible' : 'auto'}"
     >
       <shrinkable-menu
         :shrink="shrink"
@@ -34,7 +34,7 @@
     </div>
     <div
       class="main-header-con"
-      :style="{paddingLeft: shrink?'60px':'200px'}"
+      :style="{paddingLeft: shrink?'60px':'256px'}"
     >
       <div class="main-header">
         <div class="navicon-con">
@@ -92,7 +92,7 @@
     </div>
     <div
       class="single-page-con"
-      :style="{left: shrink?'60px':'200px'}"
+      :style="{left: shrink?'60px':'256px'}"
     >
       <div class="single-page">
         <router-view></router-view>

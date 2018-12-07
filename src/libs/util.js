@@ -359,7 +359,7 @@ util.initRouter = function (vm) {
         component: 'error-page/404'
     }];
     // 模拟异步请求
-    util.ajax('test.json').then(res => {
+    util.ajax('mock.json').then(res => {
         var menuData = res.data;
         util.initRouterNode(constRoutes, menuData);
         util.initRouterNode(otherRoutes, otherRouter);
