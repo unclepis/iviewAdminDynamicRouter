@@ -38,6 +38,7 @@
 
 <script>
 import Cookies from 'js-cookie';
+import axios from 'axios';
 export default {
     data () {
         return {
@@ -59,9 +60,20 @@ export default {
         handleSubmit () {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
-                    Cookies.set('user', this.form.userName);
-                    this.$router.push({
-                        name: 'home_index'
+                    const {username,password} = this.form;
+                    axios.post('http://172.21.46.17:8080/login',{
+                        username,
+                        password
+                    })
+                    .then(function (response) {
+                        console.log(response);
+                          Cookies.set('user', this.form.userName);
+                          this.$router.push({
+                            name: 'home_index'
+                          });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
                     });
                 }
             });
