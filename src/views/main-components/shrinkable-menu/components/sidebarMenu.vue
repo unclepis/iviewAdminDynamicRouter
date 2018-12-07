@@ -5,11 +5,6 @@
 <template>
     <Menu ref="sideMenu" :active-name="$route.name" :open-names="openNames" :theme="menuTheme" width="auto" @on-select="changeMenu">
         <template v-for="levelOne in menuList">
-            <!-- <MenuItem v-if="levelOne.children.length<1" :name="levelOne.children[0].name" :key="levelOne.path">
-                <Icon :type="levelOne.icon" :size="iconSize" :key="levelOne.path_icon"></Icon>
-                <span class="layout-text" :key="levelOne.path_path">{{ itemTitle(levelOne) }}</span>
-            </MenuItem> -->
-
             <Submenu v-if="levelOne.children.length >=1" :name="levelOne.name" :key="levelOne.path">
                 <template slot="title">
                     <Icon :type="levelOne.icon" :size="iconSize"></Icon>
