@@ -7,7 +7,9 @@ import App from './app.vue';
 import util from '@/libs/util.js';
 import hasPermission from '@/libs/hasPermission.js';
 import 'iview/dist/styles/iview.css';
+import $axios from '@/api/request.js';
 
+Vue.prototype.$http = $axios; // 导入全局封装的axios
 Vue.use(iView);
 Vue.use(hasPermission);
 Vue.use(iView, {
