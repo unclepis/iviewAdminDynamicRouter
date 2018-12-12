@@ -3,29 +3,20 @@
 </style>
 <template>
   <div class="home-main">
-    home page
-    <DatePicker type="date" multiple placeholder="Select date" style="width: 300px"></DatePicker>
+    <baidu-map></baidu-map>
   </div>
 </template>
 
 <script>
-import Cookies from "js-cookie";
+import baiduMap from "./components/baiduMap.vue";
 export default {
   name: "home",
-  data() {
-    return {
-    };
+  components: {
+    baiduMap
   },
-  created() {
-    var self = this;
-    self.$http
-      .get("/sys-users")
-      .then(function(response) {
-        console.log(response);
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-  }
+  data() {
+    return {};
+  },
+  created() {}
 };
 </script>

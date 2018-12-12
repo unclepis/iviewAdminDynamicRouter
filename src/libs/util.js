@@ -286,7 +286,7 @@ util.openNewPage = function (vm, name, argu, query) {
 
     if (!tagHasOpened) {
         let tag = [];
-        for(var l = 0; l < vm.$store.state.app.tagsList.length; l++){
+        for (var l = 0; l < vm.$store.state.app.tagsList.length; l++) {
             var item = vm.$store.state.app.tagsList[l];
             if (item.children && item.children.length > 0) {
                 for (var j = 0; j < item.children.length; j++) {
@@ -302,13 +302,13 @@ util.openNewPage = function (vm, name, argu, query) {
                     }
                 }
             } else {
-                if(name === item.name){
+                if (name === item.name) {
                     tag = item;
                     break;
                 }
             }
         }
-        if (tag) {
+        if (tag && tag.component) {
             tag = tag.children && tag.children.length > 0 ? tag.children[0] : tag;
             if (argu) {
                 tag.argu = argu;

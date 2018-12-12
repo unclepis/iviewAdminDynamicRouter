@@ -82,25 +82,10 @@ export default {
       var self = this;
       self.$refs.loginForm.validate(valid => {
         if (valid) {
-          self.$http
-            .formData("/login", {
-              username:self.form.username,
-              password:self.form.password
-            })
-            .then(function(response) {
-              // if (response.status === 200) {
-              //   self.$router.push({
-              //     name: "home_index"
-              //   });
-              // }
-                self.$router.push({
-                  name: "home_index"
-                });
-                Cookies.set('user',self.form.username);
-            })
-            .catch(function(error) {
-              console.log(error);
-            });
+          self.$router.push({
+            name: "home_index"
+          });
+          Cookies.set("user", self.form.username);
         }
       });
     }
