@@ -87,22 +87,29 @@ util.setCurrentPath = function (vm, name) {
     let title = '';
     let isOtherRouter = false;
     vm.$store.state.app.routers.forEach(item => {
-        if (item.children.length === 1) {
-            if (item.children[0].name === name) {
-                title = util.handleTitle(vm, item);
-                if (item.name === 'otherRouter') {
-                    isOtherRouter = true;
-                }
+        if (item.name === name && item.isCustom) {
+            title = util.handleTitle(vm, item);
+            if (item.name === 'otherRouter') {
+                isOtherRouter = true;
             }
         } else {
-            item.children.forEach(child => {
-                if (child.name === name) {
-                    title = util.handleTitle(vm, child);
+            if (item.children.length === 1) {
+                if (item.children[0].name === name) {
+                    title = util.handleTitle(vm, item);
                     if (item.name === 'otherRouter') {
                         isOtherRouter = true;
                     }
                 }
-            });
+            } else {
+                item.children.forEach(child => {
+                    if (child.name === name) {
+                        title = util.handleTitle(vm, child);
+                        if (item.name === 'otherRouter') {
+                            isOtherRouter = true;
+                        }
+                    }
+                });
+            }
         }
     });
     let currentPathArr = [];
@@ -136,7 +143,10 @@ util.setCurrentPath = function (vm, name) {
         let currentPathObj = vm.$store.state.app.routers.filter(item => {
 
             var hasMenu;
-            if (item.children.length < 1) {
+            if (item.name === name && item.isCustom) {
+                hasMenu = true;
+                return hasMenu;
+            } else if (item.children.length < 1) {
                 hasMenu = item.children[0].name === name;
                 return hasMenu;
             } else {
@@ -168,8 +178,21 @@ util.setCurrentPath = function (vm, name) {
                 return false;
             }
         })[0];
-
-        if (currentPathObj.children.length <= 1 && currentPathObj.name === 'home') {
+        if (currentPathObj && currentPathObj.isCustom) {
+            currentPathArr = [
+                {
+                    title: '首页',
+                    path: '',
+                    name: 'home_index'
+                },
+                {
+                    title: currentPathObj.title,
+                    path: currentPathObj.path,
+                    name: currentPathObj.name
+                },
+            ];
+        }
+        else if (currentPathObj.children.length <= 1 && currentPathObj.name === 'home') {
             currentPathArr = [
                 {
                     title: '首页',
@@ -288,25 +311,33 @@ util.openNewPage = function (vm, name, argu, query) {
         let tag = [];
         for (var l = 0; l < vm.$store.state.app.tagsList.length; l++) {
             var item = vm.$store.state.app.tagsList[l];
-            if (item.children && item.children.length > 0) {
-                for (var j = 0; j < item.children.length; j++) {
-                    if (name == item.children[j].name) {
-                        tag = item.children[j];
-                        break;
-                    }
-                    for (var k = 0; k < item.children[j].length; k++) {
-                        if (name == item.children[j][k].name) {
-                            tag = item.children[j][k];
-                            break;
-                        }
-                    }
-                }
-            } else {
+            if (item.isCustom) {
                 if (name === item.name) {
                     tag = item;
                     break;
                 }
+            } else {
+                if (item.children && item.children.length > 0) {
+                    for (var j = 0; j < item.children.length; j++) {
+                        if (name == item.children[j].name) {
+                            tag = item.children[j];
+                            break;
+                        }
+                        for (var k = 0; k < item.children[j].length; k++) {
+                            if (name == item.children[j][k].name) {
+                                tag = item.children[j][k];
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    if (name === item.name) {
+                        tag = item;
+                        break;
+                    }
+                }
             }
+
         }
         if (tag && tag.component) {
             tag = tag.children && tag.children.length > 0 ? tag.children[0] : tag;
@@ -373,7 +404,9 @@ util.initRouter = function (vm) {
         let tagsList = [];
 
         vm.$store.state.app.routers.map((item) => {
-            if (item.children.length <= 1) {
+            if (item.isCustom) {
+                tagsList.push(item);
+            } else if (item.children.length <= 1) {
                 tagsList.push(item.children[0]);
             } else {
                 tagsList.push(...item.children);

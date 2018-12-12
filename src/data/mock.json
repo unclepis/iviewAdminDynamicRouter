@@ -215,5 +215,22 @@
                 "component": "systemManagement/theirMonitoring/theirMonitoring"
             }
         ]
+    },
+    {
+        "path": "/factoryMonitor",
+        "name": "factoryMonitor",
+        "icon": "ios-pulse",
+        "title": "车间监控",
+        "component": "Main",
+        "isCustom":true,
+        "children": [
+            {
+                "path": "/factoryMonitor",
+                "name": "factoryMonitor",
+                "icon": "ios-pulse",
+                "title": "车间监控",
+                "component": "systemManagement/iframeView/factoryViewer"
+            }
+        ]
     }
 ]
