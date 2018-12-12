@@ -34,7 +34,8 @@ module.exports = merge(webpackBaseConfig, {
         }),
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: '"production"'
+                NODE_ENV: '"production"',
+                BASE_URL: `""`
             }
         }),
         new webpack.optimize.UglifyJsPlugin({

@@ -19,9 +19,9 @@
             :model="form"
             :rules="rules"
           >
-            <FormItem prop="userName">
+            <FormItem prop="username">
               <Input
-                v-model="form.userName"
+                v-model="form.username"
                 placeholder="请输入用户名"
               >
               <span slot="prepend">
@@ -66,11 +66,11 @@ export default {
   data() {
     return {
       form: {
-        userName: "",
+        username: "",
         password: ""
       },
       rules: {
-        userName: [
+        username: [
           { required: true, message: "账号不能为空", trigger: "blur" }
         ],
         password: [{ required: true, message: "密码不能为空", trigger: "blur" }]
@@ -82,25 +82,25 @@ export default {
       var self = this;
       self.$refs.loginForm.validate(valid => {
         if (valid) {
-          // const {username,password} = self.form;
-          // self.$http.post('http://172.21.46.17:8080/login',{
-          //     username,
-          //     password
-          // })
-          // .then(function (response) {
-          //     console.log(response);
-          //       Cookies.set('user', self.form.userName);
-          //       Cookies.set('token', response.headers.authorization);
-          //       self.$router.push({
-          //         name: 'home_index'
-          //       });
-          // })
-          // .catch(function (error) {
-          //     console.log(error);
-          // });
-          self.$router.push({
-            name: "home_index"
-          });
+          self.$http
+            .formData("/login", {
+              username:self.form.username,
+              password:self.form.password
+            })
+            .then(function(response) {
+              // if (response.status === 200) {
+              //   self.$router.push({
+              //     name: "home_index"
+              //   });
+              // }
+                self.$router.push({
+                  name: "home_index"
+                });
+                Cookies.set('user',self.form.username);
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
         }
       });
     }

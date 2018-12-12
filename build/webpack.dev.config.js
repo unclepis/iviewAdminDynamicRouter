@@ -7,6 +7,7 @@ const webpackBaseConfig = require('./webpack.base.config.js');
 const fs = require('fs');
 const package = require('../package.json');
 
+
 fs.open('./env.js', 'w', function(err, fd) {
     const buf = 'export default "development";';
     fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
@@ -19,10 +20,33 @@ module.exports = merge(webpackBaseConfig, {
         filename: '[name].js',
         chunkFilename: '[name].chunk.js'
     },
+    devServer: {
+        historyApiFallback: true,
+        hot: true,
+        inline: true,
+        stats: 'errors-only',
+        host: '172.21.46.8',
+        port: '8080',
+        proxy: {
+            '/api/*': {
+                target: 'http://localhost:9999',
+                secure: true,
+                rewrite: function(req) {
+                    req.url = req.url.replace(/^\/api/, '');
+                }
+            }
+        }
+    },
     plugins: [
         new ExtractTextPlugin({
             filename: '[name].css',
             allChunks: true
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: '"development"',
+                BASE_URL: '"http://172.21.46.17:8081"'
+            }
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: ['vender-exten', 'vender-base'],
