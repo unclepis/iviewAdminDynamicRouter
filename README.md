@@ -56,37 +56,23 @@ util.initRouter = function (vm) {
         vm.$store.commit('updateDefaultRouter', otherRoutes);
         // 刷新界面菜单
         vm.$store.commit('updateMenulist', constRoutes.filter(item => item.children.length > 0));
+        
+        let tagsList = [];
+
+        vm.$store.state.app.routers.map((item) => {
+            if (item.isCustom) { // 一级菜单加了标识
+                tagsList.push(item);
+            } else if (item.children.length <= 1) {
+                tagsList.push(item.children[0]);
+            } else {
+                tagsList.push(...item.children);
+            }
+        });
+        vm.$store.commit('setTagsList', tagsList);
     });
 };
 
-// 生成路由节点
-util.initRouterNode = function (routers, data) {
-    for (var item of data) {
-        let menu = Object.assign({}, item);
-        if (menu.component) {
-            if (menu.component === "Main") { // 一级菜单的router-view,将后台返回的字符串转化成组件
-                menu.component = Main;
-            } else if (menu.component === "ParentView") { //二级菜单的router-view,将后台返回的字符串转化成组件
-                menu.component = ParentView;
-            } else {
-                menu.component = lazyLoading(menu.component); // 三级菜单动态加载
-            }
-        }
 
-        if (item.children && item.children.length > 0) {
-            menu.children = [];
-            util.initRouterNode(menu.children, item.children);
-        }
-        // let meta = {};
-        // // 给页面添加标题
-        // meta.permission = menu.permission ? menu.permission : null;
-        // meta.title = menu.title ? menu.title : null;
-
-        // menu.meta = meta;
-
-        routers.push(menu);
-    }
-};
 
 // 重新了util的setCurrentPath方法支持三层路由
 
@@ -95,22 +81,29 @@ util.initRouterNode = function (routers, data) {
     let title = '';
     let isOtherRouter = false;
     vm.$store.state.app.routers.forEach(item => {
-        if (item.children.length === 1) {
-            if (item.children[0].name === name) {
-                title = util.handleTitle(vm, item);
-                if (item.name === 'otherRouter') {
-                    isOtherRouter = true;
-                }
+        if (item.name === name && item.isCustom) {
+            title = util.handleTitle(vm, item);
+            if (item.name === 'otherRouter') {
+                isOtherRouter = true;
             }
         } else {
-            item.children.forEach(child => {
-                if (child.name === name) {
-                    title = util.handleTitle(vm, child);
+            if (item.children.length === 1) {
+                if (item.children[0].name === name) {
+                    title = util.handleTitle(vm, item);
                     if (item.name === 'otherRouter') {
                         isOtherRouter = true;
                     }
                 }
-            });
+            } else {
+                item.children.forEach(child => {
+                    if (child.name === name) {
+                        title = util.handleTitle(vm, child);
+                        if (item.name === 'otherRouter') {
+                            isOtherRouter = true;
+                        }
+                    }
+                });
+            }
         }
     });
     let currentPathArr = [];
@@ -144,7 +137,10 @@ util.initRouterNode = function (routers, data) {
         let currentPathObj = vm.$store.state.app.routers.filter(item => {
 
             var hasMenu;
-            if (item.children.length < 1) {
+            if (item.name === name && item.isCustom) {
+                hasMenu = true;
+                return hasMenu;
+            } else if (item.children.length < 1) {
                 hasMenu = item.children[0].name === name;
                 return hasMenu;
             } else {
@@ -176,8 +172,21 @@ util.initRouterNode = function (routers, data) {
                 return false;
             }
         })[0];
-
-        if (currentPathObj.children.length <= 1 && currentPathObj.name === 'home') {
+        if (currentPathObj && currentPathObj.isCustom) {
+            currentPathArr = [
+                {
+                    title: '首页',
+                    path: '',
+                    name: 'home_index'
+                },
+                {
+                    title: currentPathObj.title,
+                    path: currentPathObj.path,
+                    name: currentPathObj.name
+                },
+            ];
+        }
+        else if (currentPathObj.children.length <= 1 && currentPathObj.name === 'home') {
             currentPathArr = [
                 {
                     title: '首页',
@@ -301,11 +310,10 @@ export default (url) =>()=>import(`@/views/${url}.vue`)
         "component": "Main",
         "children": [
             {
-                "path": "OeeStatistics",
+                "path": "/OeeStatistics",
                 "name": "OeeStatistics",
                 "icon": "ios-pulse",
                 "title": "OEE统计",
-                "parentComponent": "deviceManagement",
                 "component": "ParentView",
                 "children": [
                     {
@@ -313,53 +321,218 @@ export default (url) =>()=>import(`@/views/${url}.vue`)
                         "name": "deviceOEE",
                         "icon": "wand",
                         "title": "设备OEE",
-                        "component": "group/page1/page1"
+                        "component": "deviceManagement/OeeStatistics/deviceOEE/deviceOEE"
                     },
                     {
                         "path": "deviceEfficiencyAnalysis",
                         "name": "deviceEfficiencyAnalysis",
                         "icon": "ios-analytics-outline",
                         "title": "设备效率分析",
-                        "component": "group/page2/page2"
+                        "component": "deviceManagement/OeeStatistics/deviceEfficiencyAnalysis/deviceEfficiencyAnalysis"
+                    },
+                    {
+                        "path": "deviceAlarmStatistics",
+                        "name": "deviceAlarmStatistics",
+                        "icon": "ios-analytics-outline",
+                        "title": "设备告警统计",
+                        "component": "deviceManagement/OeeStatistics/deviceAlarmStatistics/deviceAlarmStatistics"
+                    },
+                    {
+                        "path": "deviceLogAnalysis",
+                        "name": "deviceLogAnalysis",
+                        "icon": "ios-analytics-outline",
+                        "title": "设备日志分析",
+                        "component": "deviceManagement/OeeStatistics/deviceLogAnalysis/deviceLogAnalysis"
+                    },
+                    {
+                        "path": "deviceStopAnalysis",
+                        "name": "deviceStopAnalysis",
+                        "icon": "ios-analytics-outline",
+                        "title": "设备停机分析",
+                        "component": "deviceManagement/OeeStatistics/deviceStopAnalysis/deviceStopAnalysis"
+                    }
+                ]
+            },
+            {
+                "path": "/deviceArchives",
+                "name": "deviceArchives",
+                "icon": "ios-pulse",
+                "title": "设备档案",
+                "component": "ParentView",
+                "children": [
+                    {
+                        "path": "archivesBasicInfo",
+                        "name": "archivesBasicInfo",
+                        "icon": "wand",
+                        "title": "详情基本信息",
+                        "component": "deviceManagement/deviceArchives/archivesBasicInfo/archivesBasicInfo"
+                    },
+                    {
+                        "path": "archivesDataCollection",
+                        "name": "archivesDataCollection",
+                        "icon": "ios-analytics-outline",
+                        "title": "详情数据采集",
+                        "component": "deviceManagement/deviceArchives/archivesDataCollection/archivesDataCollection"
+                    },
+                    {
+                        "path": "archivesDeviceAlarm",
+                        "name": "archivesDeviceAlarm",
+                        "icon": "ios-analytics-outline",
+                        "title": "详情设备告警",
+                        "component": "deviceManagement/deviceArchives/archivesDeviceAlarm/archivesDeviceAlarm"
+                    },
+                    {
+                        "path": "archivesDeviceLog",
+                        "name": "archivesDeviceLog",
+                        "icon": "ios-analytics-outline",
+                        "title": "详情设备日志",
+                        "component": "deviceManagement/deviceArchives/archivesDeviceLog/archivesDeviceLog"
+                    },
+                    {
+                        "path": "archivesCollectionPointConfig",
+                        "name": "archivesCollectionPointConfig",
+                        "icon": "ios-analytics-outline",
+                        "title": "详情采集点配置",
+                        "component": "deviceManagement/deviceArchives/archivesCollectionPointConfig/archivesCollectionPointConfig"
+                    }
+                ]
+            },
+            {
+                "path": "/alarmManagement",
+                "name": "alarmManagement",
+                "icon": "ios-pulse",
+                "title": "告警管理",
+                "component": "ParentView",
+                "children": [
+                    {
+                        "path": "alarmConfirmOrNot",
+                        "name": "alarmConfirmOrNot",
+                        "icon": "wand",
+                        "title": "告警确认/待确认",
+                        "component": "deviceManagement/alarmManagement/alarmConfirmOrNot/alarmConfirmOrNot"
+                    },
+                    {
+                        "path": "alarmHistoryQuery",
+                        "name": "alarmHistoryQuery",
+                        "icon": "ios-analytics-outline",
+                        "title": "告警历史查询",
+                        "component": "deviceManagement/alarmManagement/alarmHistoryQuery/alarmHistoryQuery"
+                    },
+                    {
+                        "path": "alarmKnowledge",
+                        "name": "alarmKnowledge",
+                        "icon": "ios-analytics-outline",
+                        "title": "告警知识库",
+                        "component": "deviceManagement/alarmManagement/alarmKnowledge/alarmKnowledge"
                     }
                 ]
             }
         ]
     },
     {
-        "path": "/groupOne",
-        "icon": "ios-folder",
-        "name": "system_index",
-        "title": "groupOne",
+        "path": "/systemManagement",
+        "name": "systemManagement",
+        "icon": "link",
+        "title": "系统管理",
         "component": "Main",
         "children": [
             {
-                "path": "pageOne",
-                "icon": "ios-paper-outline",
-                "name": "pageOne",
-                "title": "pageOne",
-                "component": "group/page1/page1",
-                "permission": [
-                    "del"
+                "path": "/alarmConfiguration",
+                "name": "alarmConfiguration",
+                "icon": "ios-pulse",
+                "title": "告警配置",
+                "component": "ParentView",
+                "children": [
+                    {
+                        "path": "alarmRedefine",
+                        "name": "alarmRedefine",
+                        "icon": "wand",
+                        "title": "告警重定义",
+                        "component": "systemManagement/alarmConfiguration/alarmRedefine/alarmRedefine"
+                    },
+                    {
+                        "path": "alarmLevelConfiguration",
+                        "name": "alarmLevelConfiguration",
+                        "icon": "ios-analytics-outline",
+                        "title": "告警等级配置",
+                        "component": "systemManagement/alarmConfiguration/alarmLevelConfiguration/alarmLevelConfiguration"
+                    },
+                    {
+                        "path": "alarmTypeConfiguration",
+                        "name": "alarmTypeConfiguration",
+                        "icon": "ios-analytics-outline",
+                        "title": "告警类型配置",
+                        "component": "systemManagement/alarmConfiguration/alarmTypeConfiguration/alarmTypeConfiguration"
+                    }
                 ]
             },
             {
-                "path": "pageTwo",
-                "icon": "ios-paper-outline",
-                "name": "pageTwo",
-                "title": "pageTwo",
-                "component": "group/page2/page2",
-                "permission": [
-                    "add",
-                    "del"
+                "path": "/systemConfiguration",
+                "name": "systemConfiguration",
+                "icon": "ios-pulse",
+                "title": "系统配置",
+                "component": "ParentView",
+                "children": [
+                    {
+                        "path": "roleManagement",
+                        "name": "roleManagement",
+                        "icon": "wand",
+                        "title": "角色管理",
+                        "component": "systemManagement/systemConfiguration/roleManagement/roleManagement"
+                    },
+                    {
+                        "path": "userManagement",
+                        "name": "userManagement",
+                        "icon": "ios-analytics-outline",
+                        "title": "用户管理",
+                        "component": "systemManagement/systemConfiguration/userManagement/userManagement"
+                    },
+                    {
+                        "path": "systemMaintanance",
+                        "name": "systemMaintanance",
+                        "icon": "ios-analytics-outline",
+                        "title": "系统维护",
+                        "component": "systemManagement/systemConfiguration/systemMaintanance/systemMaintanance"
+                    }
                 ]
             },
             {
-                "path": "pageThere",
-                "icon": "ios-paper-outline",
-                "name": "pageThere",
-                "title": "pageThere",
-                "component": "group/page3/page3"
+                "path": "/menuConfiguration",
+                "name": "menuConfiguration",
+                "icon": "ios-pulse",
+                "title": "菜单配置",
+                "component": "systemManagement/menuConfiguration/menuConfiguration"
+            },
+            {
+                "path": "/operationLog",
+                "name": "operationLog",
+                "icon": "ios-pulse",
+                "title": "操作日志",
+                "component": "systemManagement/operationLog/operationLog"
+            },
+            {
+                "path": "/theirMonitoring",
+                "name": "theirMonitoring",
+                "icon": "ios-pulse",
+                "title": "自身监控",
+                "component": "systemManagement/theirMonitoring/theirMonitoring"
+            }
+        ]
+    },
+    {
+        "path": "/factoryMonitor",
+        "name": "factoryMonitor",
+        "icon": "ios-pulse",
+        "title": "车间监控",
+        "component": "Main",
+        "isCustom":true,
+        "children": [
+            {
+                "path": "/factoryMonitor",
+                "name": "factoryMonitor",
+                "icon": "ios-pulse",
+                "title": "车间监控",
+                "component": "systemManagement/iframeView/factoryViewer"
             }
         ]
     }
@@ -369,38 +542,41 @@ export default (url) =>()=>import(`@/views/${url}.vue`)
 //修改main-components/components/siderbarMenu.vue文件,渲染三级菜单
 
 ```
-    <template>
+<template>
     <Menu ref="sideMenu" :active-name="$route.name" :open-names="openNames" :theme="menuTheme" width="auto" @on-select="changeMenu">
         <template v-for="levelOne in menuList">
-            <!-- <MenuItem v-if="levelOne.children.length<1" :name="levelOne.children[0].name" :key="levelOne.path">
-                <Icon :type="levelOne.icon" :size="iconSize" :key="levelOne.path_icon"></Icon>
-                <span class="layout-text" :key="levelOne.path_path">{{ itemTitle(levelOne) }}</span>
-            </MenuItem> -->
-
-            <Submenu v-if="levelOne.children.length >=1" :name="levelOne.name" :key="levelOne.path">
-                <template slot="title">
-                    <Icon :type="levelOne.icon" :size="iconSize"></Icon>
-                    <span class="layout-text">111{{ itemTitle(levelOne) }}</span>
-                </template>
-                <template v-for="levelTwo in levelOne.children">
-                    <MenuItem v-if="isThirdLeveMenu(levelTwo)==false" :name="levelTwo.name" :key="levelTwo.name">
-                        <Icon :type="levelTwo.icon" :size="iconSize" :key="levelTwo.name_icon"></Icon>
-                        <span class="layout-text" :key="levelTwo.name_span">222{{ levelTwo.title }}</span>
-                    </MenuItem>
-                       <Submenu class="levelTwoSubmenu" v-if="isThirdLeveMenu(levelTwo)==true" :name="levelTwo.name" :key="'menuitem' + levelTwo.name">
-                            <template slot="title">
-                                <Icon :type="levelTwo.icon" :size="iconSize" :key="'icon' + levelTwo.name"></Icon>
-                                <span class="layout-text" :key="'title' + levelTwo.name">233{{ itemTitle(levelTwo) }}</span>
-                            </template>
-                            <template v-for="levelThree in levelTwo.children">
-                                <MenuItem :name="levelThree.name" :key="'menuitem' + levelThree.name">
-                                <Icon :type="levelThree.icon" :size="iconSize" :key="'icon' + levelThree.name"></Icon>
-                                <span class="layout-text" :key="'title' + levelThree.name">333{{ itemTitle(levelThree) }}</span>
-                                </MenuItem>
+                    <template v-if="levelOne.isCustom">  <!-- 一级菜单 -->
+                         <MenuItem  :name="levelOne.name" :key="levelOne.name">
+                            <Icon :type="levelOne.icon" :size="iconSize" :key="levelOne.name_icon"></Icon>
+                            <span class="layout-text" :key="levelOne.title">{{ levelOne.title }}</span>
+                        </MenuItem>
+                    </template>
+                     <template v-else> <!-- 多级菜单级菜单 -->
+                        <Submenu v-if="levelOne.children.length >=1" :name="levelOne.name" :key="levelOne.path">
+                        <template slot="title">
+                            <Icon :type="levelOne.icon" :size="iconSize"></Icon>
+                            <span class="layout-text">{{ itemTitle(levelOne) }}</span>
+                        </template>
+                        <template v-for="levelTwo in levelOne.children">
+                            <MenuItem class="levelOneSubmenu" v-if="isThirdLeveMenu(levelTwo)==false" :name="levelTwo.name" :key="levelTwo.name">
+                                <Icon :type="levelTwo.icon" :size="iconSize" :key="levelTwo.name_icon"></Icon>
+                                <span class="layout-text" :key="levelTwo.name_span">{{ levelTwo.title }}</span>
+                            </MenuItem>
+                            <Submenu class="levelTwoSubmenu" v-if="isThirdLeveMenu(levelTwo)==true" :name="levelTwo.name" :key="'menuitem' + levelTwo.name">
+                                    <template slot="title">
+                                        <Icon :type="levelTwo.icon" :size="iconSize" :key="'icon' + levelTwo.name"></Icon>
+                                        <span class="layout-text" :key="'title' + levelTwo.name">{{ itemTitle(levelTwo) }}</span>
+                                    </template>
+                                    <template v-for="levelThree in levelTwo.children">
+                                        <MenuItem :name="levelThree.name" :key="'menuitem' + levelThree.name">
+                                        <Icon :type="levelThree.icon" :size="iconSize" :key="'icon' + levelThree.name"></Icon>
+                                        <span class="layout-text" :key="'title' + levelThree.name">{{ itemTitle(levelThree) }}</span>
+                                        </MenuItem>
+                                    </template>
+                                </Submenu>
                             </template>
                         </Submenu>
-                </template>
-            </Submenu>
+                     </template>
         </template>
     </Menu>
 </template>
