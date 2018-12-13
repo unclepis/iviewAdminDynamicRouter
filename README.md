@@ -72,10 +72,7 @@ util.initRouter = function (vm) {
     });
 };
 
-
-
 // 重新了util的setCurrentPath方法支持三层路由
-
 ```
     util.setCurrentPath = function (vm, name) {
     let title = '';
@@ -279,6 +276,7 @@ util.initRouter = function (vm) {
     return currentPathArr;
 };
 ```
+
 ```
 动态加载组件
 ```
@@ -288,7 +286,6 @@ export default (url) =>()=>import(`@/views/${url}.vue`)
 ```
 
 最后在main.js中进行调用
-
 ```
 //main.js
  mounted () {
@@ -298,7 +295,6 @@ export default (url) =>()=>import(`@/views/${url}.vue`)
 ```
 
 // mock 后台返回的三级菜单
-
 ```
 //test.json，模拟异步请求数据
 [
@@ -540,7 +536,6 @@ export default (url) =>()=>import(`@/views/${url}.vue`)
 ```
 
 //修改main-components/components/siderbarMenu.vue文件,渲染三级菜单
-
 ```
 <template>
     <Menu ref="sideMenu" :active-name="$route.name" :open-names="openNames" :theme="menuTheme" width="auto" @on-select="changeMenu">
@@ -583,7 +578,6 @@ export default (url) =>()=>import(`@/views/${url}.vue`)
 ```
 
 // iview menu组件引入submenu后样式有点问题,自己写了样式修复样式的问题
-
 ```
 // 修复菜单背景颜色因为margin错位的问题
 .ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened{
