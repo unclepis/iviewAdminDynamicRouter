@@ -228,7 +228,7 @@
                 "path": "/factoryMonitor",
                 "name": "factoryMonitor",
                 "icon": "ios-pulse",
-                "title": "车间监控",
+                "title": "车间监控001",
                 "component": "systemManagement/iframeView/factoryViewer"
             }
         ]
