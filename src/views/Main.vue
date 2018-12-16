@@ -138,8 +138,8 @@ export default {
   methods: {
     init() {
       let pathArr = util.setCurrentPath(this, this.$route.name);
-      if (pathArr.length >= 2) {
-        this.$store.commit("addOpenSubmenu", pathArr[1].name);
+      if (pathArr.length >= 1) {
+        this.$store.commit("addOpenSubmenu", pathArr[0].name);
       }
       this.userName = Cookies.get("user");
     },

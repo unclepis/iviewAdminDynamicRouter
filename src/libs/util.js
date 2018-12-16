@@ -51,23 +51,25 @@ util.showThisRoute = function (itAccess, currentAccess) {
 util.getRouterObjByName = function (routers, name) {
     let routerObj = {};
     routers.forEach(item => {
-        if (item.name === 'otherRouter') {
-            item.children.forEach((child, i) => {
-                if (child.name === name) {
-                    routerObj = item.children[i];
-                }
-            });
-        } else {
-            if (item.children.length === 1) {
-                if (item.children[0].name === name) {
-                    routerObj = item.children[0];
-                }
-            } else {
+        if (item) {
+            if (item.name === 'otherRouter') {
                 item.children.forEach((child, i) => {
                     if (child.name === name) {
                         routerObj = item.children[i];
                     }
                 });
+            } else {
+                if (item.children.length === 1) {
+                    if (item.children[0].name === name) {
+                        routerObj = item.children[0];
+                    }
+                } else {
+                    item.children.forEach((child, i) => {
+                        if (child.name === name) {
+                            routerObj = item.children[i];
+                        }
+                    });
+                }
             }
         }
     });
@@ -87,28 +89,30 @@ util.setCurrentPath = function (vm, name) {
     let title = '';
     let isOtherRouter = false;
     vm.$store.state.app.routers.forEach(item => {
-        if (item.name === name && item.isCustom) {
-            title = util.handleTitle(vm, item);
-            if (item.name === 'otherRouter') {
-                isOtherRouter = true;
-            }
-        } else {
-            if (item.children.length === 1) {
-                if (item.children[0].name === name) {
-                    title = util.handleTitle(vm, item);
-                    if (item.name === 'otherRouter') {
-                        isOtherRouter = true;
-                    }
+        if (item) {
+            if (item.name === name && item.isCustom) {
+                title = util.handleTitle(vm, item);
+                if (item.name === 'otherRouter') {
+                    isOtherRouter = true;
                 }
             } else {
-                item.children.forEach(child => {
-                    if (child.name === name) {
-                        title = util.handleTitle(vm, child);
+                if (item.children.length === 1) {
+                    if (item.children[0].name === name) {
+                        title = util.handleTitle(vm, item);
                         if (item.name === 'otherRouter') {
                             isOtherRouter = true;
                         }
                     }
-                });
+                } else {
+                    item.children.forEach(child => {
+                        if (child.name === name) {
+                            title = util.handleTitle(vm, child);
+                            if (item.name === 'otherRouter') {
+                                isOtherRouter = true;
+                            }
+                        }
+                    });
+                }
             }
         }
     });
@@ -141,41 +145,42 @@ util.setCurrentPath = function (vm, name) {
     //去导航菜单二级页面或三级页面
     else {
         let currentPathObj = vm.$store.state.app.routers.filter(item => {
-
-            var hasMenu;
-            if (item.name === name && item.isCustom) {
-                hasMenu = true;
-                return hasMenu;
-            } else if (item.children.length < 1) {
-                hasMenu = item.children[0].name === name;
-                return hasMenu;
-            } else {
-                let i = 0;
-                let childArr = item.children;
-                let len = childArr.length;
-                while (i < len) {
-                    //如果是三级页面按钮，则在二级按钮数组中找不到这个按钮名称
-                    //需要二级页面下可能出现三级子菜单的情况逻辑加入
-                    if (childArr[i].name === name) {
-                        hasMenu = true;
-                        return hasMenu;
+            if (item) {
+                var hasMenu;
+                if (item.name === name && item.isCustom) {
+                    hasMenu = true;
+                    return hasMenu;
+                } else if (item.children.length < 1) {
+                    hasMenu = item.children[0].name === name;
+                    return hasMenu;
+                } else {
+                    let i = 0;
+                    let childArr = item.children;
+                    let len = childArr.length;
+                    while (i < len) {
+                        //如果是三级页面按钮，则在二级按钮数组中找不到这个按钮名称
+                        //需要二级页面下可能出现三级子菜单的情况逻辑加入
+                        if (childArr[i].name === name) {
+                            hasMenu = true;
+                            return hasMenu;
+                        }
+                        i++;
                     }
-                    i++;
-                }
-                //如果一级，二级菜单下都没有此按钮名称，则遍历三级菜单
-                if (!hasMenu) {
-                    for (let m = 0; m < childArr.length; m++) {
-                        if (!childArr[m].children) continue;
-                        let sonArr = childArr[m].children;
-                        for (let n = 0; n < sonArr.length; n++) {
-                            if (sonArr[n].name === name) {
-                                hasMenu = true;
-                                return hasMenu;
+                    //如果一级，二级菜单下都没有此按钮名称，则遍历三级菜单
+                    if (!hasMenu) {
+                        for (let m = 0; m < childArr.length; m++) {
+                            if (!childArr[m].children) continue;
+                            let sonArr = childArr[m].children;
+                            for (let n = 0; n < sonArr.length; n++) {
+                                if (sonArr[n].name === name) {
+                                    hasMenu = true;
+                                    return hasMenu;
+                                }
                             }
                         }
                     }
+                    return false;
                 }
-                return false;
             }
         })[0];
         if (currentPathObj && currentPathObj.isCustom) {
@@ -391,11 +396,14 @@ util.initRouter = function (vm) {
     }];
     // 模拟异步请求
     util.ajax('mock.json').then(res => {
-        var menuData = res.data;
+        var menuData = res.data.menuList;
         util.initRouterNode(constRoutes, menuData);
-        util.initRouterNode(otherRoutes, otherRouter);
+        util.initRouterNode(otherRoutes, [...otherRouter, ...res.data.otherRouter]);
         // 添加主界面路由
         vm.$store.commit('updateAppRouter', constRoutes.filter(item => item.children.length > 0));
+
+        vm.$store.commit('updateOtherRouter', otherRoutes.filter(item => item.children&&item.children.length > 0));
+
         // 添加全局路由
         vm.$store.commit('updateDefaultRouter', otherRoutes);
         // 刷新界面菜单
@@ -404,12 +412,14 @@ util.initRouter = function (vm) {
         let tagsList = [];
 
         vm.$store.state.app.routers.map((item) => {
-            if (item.isCustom) {
-                tagsList.push(item);
-            } else if (item.children.length <= 1) {
-                tagsList.push(item.children[0]);
-            } else {
-                tagsList.push(...item.children);
+            if (item) {
+                if (item.isCustom) {
+                    tagsList.push(item);
+                } else if (item.children.length <= 1) {
+                    tagsList.push(item.children[0]);
+                } else {
+                    tagsList.push(...item.children);
+                }
             }
         });
         vm.$store.commit('setTagsList', tagsList);

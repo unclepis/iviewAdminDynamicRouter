@@ -37,15 +37,16 @@ export const pageNoNetwork = {
 };
 
 
-// 作为Main组件的子页面展示但是不在左侧菜单显示的路由写在otherRouter里
-export const otherRouter = {
-    path: '/',
-    name: 'otherRouter',
-    component: Main,
-    children: [
-        { path: 'home', title: { i18n: 'home' }, name: 'home_index', component: () => import('@/views/home/home.vue') }
-    ]
-};
+//作为Main组件的子页面展示但是不在左侧菜单显示的路由写在otherRouter里
+// export const otherRouter = {
+//     path: '/deviceManagement',
+//     title:'设备管理',
+//     name: 'deviceManagement',
+//     component: Main,
+//     children: [
+//         { path: 'deviceDetailsInfo', title: "设备详细", name: 'deviceDetails', component: () => import('@/views/test.vue') }
+//     ]
+// };
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
@@ -54,7 +55,7 @@ export const appRouter = [
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
     loginRouter,
-    otherRouter,
+    // otherRouter,
     ...appRouter,
     page401,
     page403,

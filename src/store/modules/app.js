@@ -33,6 +33,10 @@ const app = {
             state.routers.push(...routes);
             router.addRoutes(routes);
         },
+        updateOtherRouter(state, routes) {
+            state.routers.push(...routes);
+            router.addRoutes(routes);
+        },
         // 动态添加全局路由，不需要缓存
         updateDefaultRouter(state, routes) {
             router.addRoutes(routes);
