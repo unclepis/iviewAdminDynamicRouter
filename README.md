@@ -300,242 +300,277 @@ export default (url) =>()=>import(`@/views/${url}.vue`)
 // mock 后台返回的三级菜单
 ```
 //test.json，模拟异步请求数据
-[
-    {
-        "path": "/deviceManagement",
-        "name": "deviceManagement",
-        "icon": "link",
-        "title": "设备管理",
-        "component": "Main",
-        "children": [
-            {
-                "path": "/OeeStatistics",
-                "name": "OeeStatistics",
-                "icon": "ios-pulse",
-                "title": "OEE统计",
-                "component": "ParentView",
-                "children": [
-                    {
-                        "path": "deviceOEE",
-                        "name": "deviceOEE",
-                        "icon": "wand",
-                        "title": "设备OEE",
-                        "component": "deviceManagement/OeeStatistics/deviceOEE/deviceOEE"
-                    },
-                    {
-                        "path": "deviceEfficiencyAnalysis",
-                        "name": "deviceEfficiencyAnalysis",
-                        "icon": "ios-analytics-outline",
-                        "title": "设备效率分析",
-                        "component": "deviceManagement/OeeStatistics/deviceEfficiencyAnalysis/deviceEfficiencyAnalysis"
-                    },
-                    {
-                        "path": "deviceAlarmStatistics",
-                        "name": "deviceAlarmStatistics",
-                        "icon": "ios-analytics-outline",
-                        "title": "设备告警统计",
-                        "component": "deviceManagement/OeeStatistics/deviceAlarmStatistics/deviceAlarmStatistics"
-                    },
-                    {
-                        "path": "deviceLogAnalysis",
-                        "name": "deviceLogAnalysis",
-                        "icon": "ios-analytics-outline",
-                        "title": "设备日志分析",
-                        "component": "deviceManagement/OeeStatistics/deviceLogAnalysis/deviceLogAnalysis"
-                    },
-                    {
-                        "path": "deviceStopAnalysis",
-                        "name": "deviceStopAnalysis",
-                        "icon": "ios-analytics-outline",
-                        "title": "设备停机分析",
-                        "component": "deviceManagement/OeeStatistics/deviceStopAnalysis/deviceStopAnalysis"
-                    }
-                ]
-            },
-            {
-                "path": "/deviceArchives",
-                "name": "deviceArchives",
-                "icon": "ios-pulse",
-                "title": "设备档案",
-                "component": "ParentView",
-                "children": [
-                    {
-                        "path": "archivesBasicInfo",
-                        "name": "archivesBasicInfo",
-                        "icon": "wand",
-                        "title": "详情基本信息",
-                        "component": "deviceManagement/deviceArchives/archivesBasicInfo/archivesBasicInfo"
-                    },
-                    {
-                        "path": "archivesDataCollection",
-                        "name": "archivesDataCollection",
-                        "icon": "ios-analytics-outline",
-                        "title": "详情数据采集",
-                        "component": "deviceManagement/deviceArchives/archivesDataCollection/archivesDataCollection"
-                    },
-                    {
-                        "path": "archivesDeviceAlarm",
-                        "name": "archivesDeviceAlarm",
-                        "icon": "ios-analytics-outline",
-                        "title": "详情设备告警",
-                        "component": "deviceManagement/deviceArchives/archivesDeviceAlarm/archivesDeviceAlarm"
-                    },
-                    {
-                        "path": "archivesDeviceLog",
-                        "name": "archivesDeviceLog",
-                        "icon": "ios-analytics-outline",
-                        "title": "详情设备日志",
-                        "component": "deviceManagement/deviceArchives/archivesDeviceLog/archivesDeviceLog"
-                    },
-                    {
-                        "path": "archivesCollectionPointConfig",
-                        "name": "archivesCollectionPointConfig",
-                        "icon": "ios-analytics-outline",
-                        "title": "详情采集点配置",
-                        "component": "deviceManagement/deviceArchives/archivesCollectionPointConfig/archivesCollectionPointConfig"
-                    }
-                ]
-            },
-            {
-                "path": "/alarmManagement",
-                "name": "alarmManagement",
-                "icon": "ios-pulse",
-                "title": "告警管理",
-                "component": "ParentView",
-                "children": [
-                    {
-                        "path": "alarmConfirmOrNot",
-                        "name": "alarmConfirmOrNot",
-                        "icon": "wand",
-                        "title": "告警确认/待确认",
-                        "component": "deviceManagement/alarmManagement/alarmConfirmOrNot/alarmConfirmOrNot"
-                    },
-                    {
-                        "path": "alarmHistoryQuery",
-                        "name": "alarmHistoryQuery",
-                        "icon": "ios-analytics-outline",
-                        "title": "告警历史查询",
-                        "component": "deviceManagement/alarmManagement/alarmHistoryQuery/alarmHistoryQuery"
-                    },
-                    {
-                        "path": "alarmKnowledge",
-                        "name": "alarmKnowledge",
-                        "icon": "ios-analytics-outline",
-                        "title": "告警知识库",
-                        "component": "deviceManagement/alarmManagement/alarmKnowledge/alarmKnowledge"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "path": "/systemManagement",
-        "name": "systemManagement",
-        "icon": "link",
-        "title": "系统管理",
-        "component": "Main",
-        "children": [
-            {
-                "path": "/alarmConfiguration",
-                "name": "alarmConfiguration",
-                "icon": "ios-pulse",
-                "title": "告警配置",
-                "component": "ParentView",
-                "children": [
-                    {
-                        "path": "alarmRedefine",
-                        "name": "alarmRedefine",
-                        "icon": "wand",
-                        "title": "告警重定义",
-                        "component": "systemManagement/alarmConfiguration/alarmRedefine/alarmRedefine"
-                    },
-                    {
-                        "path": "alarmLevelConfiguration",
-                        "name": "alarmLevelConfiguration",
-                        "icon": "ios-analytics-outline",
-                        "title": "告警等级配置",
-                        "component": "systemManagement/alarmConfiguration/alarmLevelConfiguration/alarmLevelConfiguration"
-                    },
-                    {
-                        "path": "alarmTypeConfiguration",
-                        "name": "alarmTypeConfiguration",
-                        "icon": "ios-analytics-outline",
-                        "title": "告警类型配置",
-                        "component": "systemManagement/alarmConfiguration/alarmTypeConfiguration/alarmTypeConfiguration"
-                    }
-                ]
-            },
-            {
-                "path": "/systemConfiguration",
-                "name": "systemConfiguration",
-                "icon": "ios-pulse",
-                "title": "系统配置",
-                "component": "ParentView",
-                "children": [
-                    {
-                        "path": "roleManagement",
-                        "name": "roleManagement",
-                        "icon": "wand",
-                        "title": "角色管理",
-                        "component": "systemManagement/systemConfiguration/roleManagement/roleManagement"
-                    },
-                    {
-                        "path": "userManagement",
-                        "name": "userManagement",
-                        "icon": "ios-analytics-outline",
-                        "title": "用户管理",
-                        "component": "systemManagement/systemConfiguration/userManagement/userManagement"
-                    },
-                    {
-                        "path": "systemMaintanance",
-                        "name": "systemMaintanance",
-                        "icon": "ios-analytics-outline",
-                        "title": "系统维护",
-                        "component": "systemManagement/systemConfiguration/systemMaintanance/systemMaintanance"
-                    }
-                ]
-            },
-            {
-                "path": "/menuConfiguration",
-                "name": "menuConfiguration",
-                "icon": "ios-pulse",
-                "title": "菜单配置",
-                "component": "systemManagement/menuConfiguration/menuConfiguration"
-            },
-            {
-                "path": "/operationLog",
-                "name": "operationLog",
-                "icon": "ios-pulse",
-                "title": "操作日志",
-                "component": "systemManagement/operationLog/operationLog"
-            },
-            {
-                "path": "/theirMonitoring",
-                "name": "theirMonitoring",
-                "icon": "ios-pulse",
-                "title": "自身监控",
-                "component": "systemManagement/theirMonitoring/theirMonitoring"
-            }
-        ]
-    },
-    {
-        "path": "/factoryMonitor",
-        "name": "factoryMonitor",
-        "icon": "ios-pulse",
-        "title": "车间监控",
-        "component": "Main",
-        "isCustom":true,
-        "children": [
-            {
-                "path": "/factoryMonitor",
-                "name": "factoryMonitor",
-                "icon": "ios-pulse",
-                "title": "车间监控",
-                "component": "systemManagement/iframeView/factoryViewer"
-            }
-        ]
-    }
-]
+{
+    "menuList": [ // appRouter在左侧菜单栏中显示的组件
+        { // 首页也从后台返回，可以根据用户角色返回不同的首页
+            "path": "/",
+            "name": "home_index",
+            "icon": "ios-pulse",
+            "title": "首页",
+            "component": "Main",
+            "isCustom": true,
+            "children": [
+                {
+                    "path": "home",
+                    "name": "home_index",
+                    "icon": "ios-pulse",
+                    "title": "首页",
+                    "component": "home/home"
+                }
+            ]
+        },
+        { // 改造后的路由最多支持三级嵌套
+            "path": "/deviceManagement",
+            "name": "deviceManagement",
+            "icon": "link",
+            "title": "设备管理",
+            "component": "Main",
+            "children": [
+                {
+                    "path": "/OeeStatistics",
+                    "name": "OeeStatistics",
+                    "icon": "ios-pulse",
+                    "title": "OEE统计",
+                    "component": "ParentView",
+                    "children": [
+                        {
+                            "path": "deviceOEE",
+                            "name": "deviceOEE",
+                            "icon": "wand",
+                            "title": "设备OEE",
+                            "component": "deviceManagement/OeeStatistics/deviceOEE/deviceOEE"
+                        },
+                        {
+                            "path": "deviceEfficiencyAnalysis",
+                            "name": "deviceEfficiencyAnalysis",
+                            "icon": "ios-analytics-outline",
+                            "title": "设备效率分析",
+                            "component": "deviceManagement/OeeStatistics/deviceEfficiencyAnalysis/deviceEfficiencyAnalysis"
+                        },
+                        {
+                            "path": "deviceAlarmStatistics",
+                            "name": "deviceAlarmStatistics",
+                            "icon": "ios-analytics-outline",
+                            "title": "设备告警统计",
+                            "component": "deviceManagement/OeeStatistics/deviceAlarmStatistics/deviceAlarmStatistics"
+                        },
+                        {
+                            "path": "deviceLogAnalysis",
+                            "name": "deviceLogAnalysis",
+                            "icon": "ios-analytics-outline",
+                            "title": "设备日志分析",
+                            "component": "deviceManagement/OeeStatistics/deviceLogAnalysis/deviceLogAnalysis"
+                        },
+                        {
+                            "path": "deviceStopAnalysis",
+                            "name": "deviceStopAnalysis",
+                            "icon": "ios-analytics-outline",
+                            "title": "设备停机分析",
+                            "component": "deviceManagement/OeeStatistics/deviceStopAnalysis/deviceStopAnalysis"
+                        }
+                    ]
+                },
+                {
+                    "path": "/deviceArchives",
+                    "name": "deviceArchives",
+                    "icon": "ios-pulse",
+                    "title": "设备档案",
+                    "component": "ParentView",
+                    "children": [
+                        {
+                            "path": "archivesBasicInfo",
+                            "name": "archivesBasicInfo",
+                            "icon": "wand",
+                            "title": "详情基本信息",
+                            "component": "deviceManagement/deviceArchives/archivesBasicInfo/archivesBasicInfo"
+                        },
+                        {
+                            "path": "archivesDataCollection",
+                            "name": "archivesDataCollection",
+                            "icon": "ios-analytics-outline",
+                            "title": "详情数据采集",
+                            "component": "deviceManagement/deviceArchives/archivesDataCollection/archivesDataCollection"
+                        },
+                        {
+                            "path": "archivesDeviceAlarm",
+                            "name": "archivesDeviceAlarm",
+                            "icon": "ios-analytics-outline",
+                            "title": "详情设备告警",
+                            "component": "deviceManagement/deviceArchives/archivesDeviceAlarm/archivesDeviceAlarm"
+                        },
+                        {
+                            "path": "archivesDeviceLog",
+                            "name": "archivesDeviceLog",
+                            "icon": "ios-analytics-outline",
+                            "title": "详情设备日志",
+                            "component": "deviceManagement/deviceArchives/archivesDeviceLog/archivesDeviceLog"
+                        },
+                        {
+                            "path": "archivesCollectionPointConfig",
+                            "name": "archivesCollectionPointConfig",
+                            "icon": "ios-analytics-outline",
+                            "title": "详情采集点配置",
+                            "component": "deviceManagement/deviceArchives/archivesCollectionPointConfig/archivesCollectionPointConfig"
+                        }
+                    ]
+                },
+                {
+                    "path": "/alarmManagement",
+                    "name": "alarmManagement",
+                    "icon": "ios-pulse",
+                    "title": "告警管理",
+                    "component": "ParentView",
+                    "children": [
+                        {
+                            "path": "alarmConfirmOrNot",
+                            "name": "alarmConfirmOrNot",
+                            "icon": "wand",
+                            "title": "告警确认/待确认",
+                            "component": "deviceManagement/alarmManagement/alarmConfirmOrNot/alarmConfirmOrNot"
+                        },
+                        {
+                            "path": "alarmHistoryQuery",
+                            "name": "alarmHistoryQuery",
+                            "icon": "ios-analytics-outline",
+                            "title": "告警历史查询",
+                            "component": "deviceManagement/alarmManagement/alarmHistoryQuery/alarmHistoryQuery"
+                        },
+                        {
+                            "path": "alarmKnowledge",
+                            "name": "alarmKnowledge",
+                            "icon": "ios-analytics-outline",
+                            "title": "告警知识库",
+                            "component": "deviceManagement/alarmManagement/alarmKnowledge/alarmKnowledge"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/systemManagement",
+            "name": "systemManagement",
+            "icon": "link",
+            "title": "系统管理",
+            "component": "Main",
+            "children": [
+                {
+                    "path": "/alarmConfiguration",
+                    "name": "alarmConfiguration",
+                    "icon": "ios-pulse",
+                    "title": "告警配置",
+                    "component": "ParentView",
+                    "children": [
+                        {
+                            "path": "alarmRedefine",
+                            "name": "alarmRedefine",
+                            "icon": "wand",
+                            "title": "告警重定义",
+                            "component": "systemManagement/alarmConfiguration/alarmRedefine/alarmRedefine"
+                        },
+                        {
+                            "path": "alarmLevelConfiguration",
+                            "name": "alarmLevelConfiguration",
+                            "icon": "ios-analytics-outline",
+                            "title": "告警等级配置",
+                            "component": "systemManagement/alarmConfiguration/alarmLevelConfiguration/alarmLevelConfiguration"
+                        },
+                        {
+                            "path": "alarmTypeConfiguration",
+                            "name": "alarmTypeConfiguration",
+                            "icon": "ios-analytics-outline",
+                            "title": "告警类型配置",
+                            "component": "systemManagement/alarmConfiguration/alarmTypeConfiguration/alarmTypeConfiguration"
+                        }
+                    ]
+                },
+                {
+                    "path": "/systemConfiguration",
+                    "name": "systemConfiguration",
+                    "icon": "ios-pulse",
+                    "title": "系统配置",
+                    "component": "ParentView",
+                    "children": [
+                        {
+                            "path": "roleManagement",
+                            "name": "roleManagement",
+                            "icon": "wand",
+                            "title": "角色管理",
+                            "component": "systemManagement/systemConfiguration/roleManagement/roleManagement"
+                        },
+                        {
+                            "path": "userManagement",
+                            "name": "userManagement",
+                            "icon": "ios-analytics-outline",
+                            "title": "用户管理",
+                            "component": "systemManagement/systemConfiguration/userManagement/userManagement"
+                        },
+                        {
+                            "path": "systemMaintanance",
+                            "name": "systemMaintanance",
+                            "icon": "ios-analytics-outline",
+                            "title": "系统维护",
+                            "component": "systemManagement/systemConfiguration/systemMaintanance/systemMaintanance"
+                        }
+                    ]
+                },
+                {
+                    "path": "/menuConfiguration",
+                    "name": "menuConfiguration",
+                    "icon": "ios-pulse",
+                    "title": "菜单配置",
+                    "component": "systemManagement/menuConfiguration/menuConfiguration"
+                },
+                {
+                    "path": "/operationLog",
+                    "name": "operationLog",
+                    "icon": "ios-pulse",
+                    "title": "操作日志",
+                    "component": "systemManagement/operationLog/operationLog"
+                },
+                {
+                    "path": "/theirMonitoring",
+                    "name": "theirMonitoring",
+                    "icon": "ios-pulse",
+                    "title": "自身监控",
+                    "component": "systemManagement/theirMonitoring/theirMonitoring"
+                }
+            ]
+        },
+        {
+            "path": "/factoryMonitor",
+            "name": "factoryMonitor",
+            "icon": "ios-pulse",
+            "title": "车间监控",
+            "component": "Main",
+            "isCustom": true,
+            "children": [
+                {
+                    "path": "/factoryMonitor",
+                    "name": "factoryMonitor",
+                    "icon": "ios-pulse",
+                    "title": "车间监控001",
+                    "component": "systemManagement/iframeView/factoryViewer"
+                }
+            ]
+        }
+    ],
+    "otherRouter": [ // otherRouter在左侧菜单栏中不显示的组件
+        {
+            "path": "/deviceManagement",
+            "title": "设备管理",
+            "name": "deviceManagement",
+            "component": "Main",
+            "children": [
+                {
+                    "path": "deviceDetailsInfo",
+                    "title": "设备详细",
+                    "name": "deviceDetails",
+                    "component": "test"
+                }
+            ]
+        }
+    ]
+}
 ```
 
 //修改main-components/components/siderbarMenu.vue文件,渲染三级菜单
