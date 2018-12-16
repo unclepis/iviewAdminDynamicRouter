@@ -1,5 +1,8 @@
 # iview-dynamicRouter
 vue+iview组件库的动态路由和权限验证实现
+- 在https://gitlab.com/unclepis/iviewadmindynamicrouter 多层路由嵌套的基础上重构
+- 左侧菜单中首页也在approuter中返回，出现在左侧菜单中
+- 增加了otherrouter返回不再左侧菜单中出现的组件
 
 ### 实现目标
 客户端从服务端拿到路由和权限数据后，刷新项目的路由和菜单列表，并进行权限控制。
