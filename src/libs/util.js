@@ -402,6 +402,7 @@ util.initRouter = function (vm) {
         // 添加主界面路由
         vm.$store.commit('updateAppRouter', constRoutes.filter(item => item.children.length > 0));
 
+        // 添加主界面不在左侧菜单的路由
         vm.$store.commit('updateOtherRouter', otherRoutes.filter(item => item.children&&item.children.length > 0));
 
         // 添加全局路由
