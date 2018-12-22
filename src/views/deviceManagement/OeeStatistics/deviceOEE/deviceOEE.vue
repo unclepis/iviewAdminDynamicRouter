@@ -1,8 +1,8 @@
 <template>
     <div style="background:#eee;padding: 20px">
         <Card :bordered="false">
-            <p slot="title">No border title</p>
-            <p>Content of no border type. Content of no border type. Content of no border type. Content of no border type. </p>
+            <p slot="title">测试一下</p>
+            <p>测试一下设备oee的内容会不会发生变化 </p>
         </Card>
     </div>
 </template>
